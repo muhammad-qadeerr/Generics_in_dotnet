@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Generics_in_dotnet
 {
@@ -88,10 +89,49 @@ namespace Generics_in_dotnet
                 yield return current.Data;
                 current = current.Next;
             }
-        }
+        }  
+    }
+    // Example
+
+    public class EmailEventHandler
+    { }
+    public class SMSRequestHandler
+    { }
+    public class JSONRequestHandler
+    { }
+    public class Email
+    {
+        public string To { get; set; }
+        public string From { get; set; }
+        public string Content { get; set; }
 
     }
-   
+    public class SMS
+    {
+        public string To { get; set; }
+        public string From { get; set; }
+        public string Content { get; set; }
+    }
+    public class JSON
+    {
+        public string Source { get; set; }
+        public string Destination { get; set; }
+        public string Content { get; set; }
+    }
+
+    public interface RequestHandler<T>  // An interface to handle events or abstract class and functions
+    {
+        public bool SendResponse(T obj);
+    }
+    public class BaseRequestHandler<T> : RequestHandler<T>
+    {
+        public bool SendResponse(T obj)
+        {
+            Console.WriteLine(obj.GetType().Name);
+            return true;
+        }
+    }
+
     class Program
     {
         private class ExampleClass { }
@@ -143,6 +183,23 @@ namespace Generics_in_dotnet
 
             }
             Console.WriteLine("\nDone.....");
+            Console.WriteLine();
+
+            // Event handling example
+
+
+            Email mail = new Email();
+            var emailRH = new BaseRequestHandler<Email>();
+            emailRH.SendResponse(mail);
+
+            SMS sms = new SMS();
+            var smsRH = new BaseRequestHandler<SMS>();
+            smsRH.SendResponse(sms);
+
+            JSON json = new JSON();
+            var jsonRH = new BaseRequestHandler<JSON>();
+            jsonRH.SendResponse(json);
+
 
 
         }
